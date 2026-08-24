@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { UserProfile } from '../../types';
+import { UserProfile, GameId } from '../../types';
 import { sounds } from '../../utils/audio';
 import { ChibiBlowfish, BlowfishEmotion } from './ChibiBlowfish';
 import { DeepSeaBackground } from './DeepSeaBackground';
@@ -25,6 +25,7 @@ interface LearnToBreatheProps {
   profile: UserProfile;
   onBackToHub: () => void;
   onUpdateScore: (gameId: 'learn-to-breathe', score: number, earnedXp: number, coins: number) => void;
+  onSelectGame?: (gameId: GameId) => void;
 }
 
 export type EmotionKey = 'joy' | 'anger' | 'fear' | 'sadness';
@@ -127,6 +128,7 @@ export const LearnToBreathe: React.FC<LearnToBreatheProps> = ({
   profile,
   onBackToHub,
   onUpdateScore,
+  onSelectGame,
 }) => {
   // Game Lifecycle: 'ready' | 'intro' | 'breathing' | 'choice' | 'reflection' | 'gameover' | 'leaderboard'
   const [gameState, setGameState] = useState<
@@ -959,7 +961,13 @@ export const LearnToBreathe: React.FC<LearnToBreatheProps> = ({
             initialGameId="learn-to-breathe"
             profile={profile}
             onClose={() => setGameState('gameover')}
-            onPlayGame={handleStartGame}
+            onPlayGame={(targetGameId) => {
+              if (targetGameId && targetGameId !== 'learn-to-breathe' && onSelectGame) {
+                onSelectGame(targetGameId);
+              } else {
+                handleStartGame();
+              }
+            }}
             isEmbeddedInGame={true}
           />
         </div>

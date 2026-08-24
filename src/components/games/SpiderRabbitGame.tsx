@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { UserProfile } from '../../types';
+import { UserProfile, GameId } from '../../types';
 import { sounds } from '../../utils/audio';
 import { recordGameScore } from '../../utils/leaderboard';
 import { LeaderboardView } from '../LeaderboardView';
@@ -81,6 +81,7 @@ interface SpiderRabbitGameProps {
   profile: UserProfile;
   onBackToHub: () => void;
   onUpdateScore: (gameId: 'spider-rabbit', score: number, earnedXp: number, coins: number) => void;
+  onSelectGame?: (gameId: GameId) => void;
 }
 
 // Fixed dimensions for the experimental canvas
@@ -95,6 +96,7 @@ export const SpiderRabbitGame: React.FC<SpiderRabbitGameProps> = ({
   profile,
   onBackToHub,
   onUpdateScore,
+  onSelectGame,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -2039,7 +2041,13 @@ export const SpiderRabbitGame: React.FC<SpiderRabbitGameProps> = ({
             initialGameId="spider-rabbit"
             profile={profile}
             onClose={() => setGameState('summary')}
-            onPlayGame={() => startTrial()}
+            onPlayGame={(targetGameId) => {
+              if (targetGameId && targetGameId !== 'spider-rabbit' && onSelectGame) {
+                onSelectGame(targetGameId);
+              } else {
+                startTrial();
+              }
+            }}
             isEmbeddedInGame={true}
           />
         </div>

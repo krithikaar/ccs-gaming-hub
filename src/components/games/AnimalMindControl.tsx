@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { UserProfile } from '../../types';
+import { UserProfile, GameId } from '../../types';
 import { sounds } from '../../utils/audio';
 import { recordGameScore } from '../../utils/leaderboard';
 import { LeaderboardView } from '../LeaderboardView';
@@ -32,6 +32,7 @@ interface AnimalMindControlProps {
   profile: UserProfile;
   onBackToHub: () => void;
   onUpdateScore: (gameId: 'animal-mind-control', score: number, earnedXp: number, coins: number) => void;
+  onSelectGame?: (gameId: GameId) => void;
 }
 
 // 8 Trials total per session with 3-second duration
@@ -65,6 +66,7 @@ export const AnimalMindControl: React.FC<AnimalMindControlProps> = ({
   profile,
   onBackToHub,
   onUpdateScore,
+  onSelectGame,
 }) => {
   // Game States: 'intro' -> 'trial_running' (3s mouse observation) -> 'question' (pick animal) -> 'feedback' (show result) -> 'summary' -> 'leaderboard'
   const [gameState, setGameState] = useState<'intro' | 'trial_running' | 'question' | 'feedback' | 'summary' | 'leaderboard'>('intro');
@@ -972,7 +974,13 @@ export const AnimalMindControl: React.FC<AnimalMindControlProps> = ({
             initialGameId="animal-mind-control"
             profile={profile}
             onClose={() => setGameState('summary')}
-            onPlayGame={() => handleStartGame()}
+            onPlayGame={(targetGameId) => {
+              if (targetGameId && targetGameId !== 'animal-mind-control' && onSelectGame) {
+                onSelectGame(targetGameId);
+              } else {
+                handleStartGame();
+              }
+            }}
             isEmbeddedInGame={true}
           />
         </div>

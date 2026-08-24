@@ -90,7 +90,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
               className="px-5 py-2.5 rounded-full bg-white hover:bg-cyan-400 text-black font-black font-cyber text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-xl transform active:scale-95"
             >
               <Play className="w-4 h-4 fill-black" />
-              <span>PLAY {activeGameDef.title.split(' ')[0].toUpperCase()}</span>
+              <span>PLAY {activeGameDef.title.toUpperCase()}</span>
             </button>
           )}
         </div>
@@ -113,7 +113,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
                   : 'bg-white/5 hover:bg-white/10 border-white/10 text-white/60 hover:text-white'
               }`}
             >
-              <span>{game.id === 'spider-rabbit' ? '🐰' : game.id === 'animal-mind-control' ? '🧠' : game.id === 'music-matrix' ? '🎹' : game.id === 'blasting-balloons' ? '🎈' : '🐡'}</span>
+              <span>{game.id === 'spider-rabbit' ? '🐰' : game.id === 'animal-mind-control' ? '🧠' : game.id === 'music-matrix' ? '🎹' : game.id === 'blasting-balloons' ? '🎈' : game.id === 'boba-dino' ? '🦖' : '🐡'}</span>
               <span>{game.title}</span>
             </button>
           );
@@ -408,8 +408,17 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
               }}
               className="px-8 py-3 rounded-full bg-white hover:bg-cyan-400 text-black font-cyber font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-xl"
             >
-              <RotateCcw className="w-4 h-4" />
-              <span>PLAY AGAIN NOW</span>
+              {selectedGameId === initialGameId ? (
+                <>
+                  <RotateCcw className="w-4 h-4" />
+                  <span>PLAY AGAIN NOW</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 fill-black" />
+                  <span>PLAY {activeGameDef.title.toUpperCase()}</span>
+                </>
+              )}
             </button>
           )}
         </div>

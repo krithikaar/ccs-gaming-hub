@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { UserProfile } from '../../types';
+import { UserProfile, GameId } from '../../types';
 import { sounds } from '../../utils/audio';
 import { SONG_TRACKS, SongTrack, SongNote } from '../../utils/musicTracks';
 import { recordGameScore } from '../../utils/leaderboard';
@@ -27,6 +27,7 @@ interface MusicMatrixProps {
   profile: UserProfile;
   onBackToHub: () => void;
   onUpdateScore: (gameId: 'music-matrix', score: number, earnedXp: number, coins: number) => void;
+  onSelectGame?: (gameId: GameId) => void;
 }
 
 interface Particle {
@@ -57,6 +58,7 @@ export const MusicMatrix: React.FC<MusicMatrixProps> = ({
   profile,
   onBackToHub,
   onUpdateScore,
+  onSelectGame,
 }) => {
   const [gameState, setGameState] = useState<'ready' | 'playing' | 'gameover' | 'leaderboard'>('ready');
   const [selectedTrack, setSelectedTrack] = useState<SongTrack>(SONG_TRACKS[0]);
@@ -1049,7 +1051,13 @@ export const MusicMatrix: React.FC<MusicMatrixProps> = ({
             initialGameId="music-matrix"
             profile={profile}
             onClose={() => setGameState('gameover')}
-            onPlayGame={() => handleStartTrack(selectedTrack)}
+            onPlayGame={(targetGameId) => {
+              if (targetGameId && targetGameId !== 'music-matrix' && onSelectGame) {
+                onSelectGame(targetGameId);
+              } else {
+                handleStartTrack(selectedTrack);
+              }
+            }}
             isEmbeddedInGame={true}
           />
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { UserProfile } from '../../types';
+import { UserProfile, GameId } from '../../types';
 import { sounds } from '../../utils/audio';
 import { recordGameScore } from '../../utils/leaderboard';
 import { LeaderboardView } from '../LeaderboardView';
@@ -19,6 +19,7 @@ interface BobaDinoProps {
   profile: UserProfile;
   onBackToHub: () => void;
   onUpdateScore: (gameId: 'boba-dino', score: number, earnedXp: number, coins: number) => void;
+  onSelectGame?: (gameId: GameId) => void;
 }
 
 export type TurnType = 'player' | 'dino';
@@ -64,6 +65,7 @@ export const BobaDino: React.FC<BobaDinoProps> = ({
   profile,
   onBackToHub,
   onUpdateScore,
+  onSelectGame,
 }) => {
   // Lifecycle States: 'intro' | 'ready_to_act' | 'delay_and_sip' | 'response' | 'debrief' | 'leaderboard'
   const [gameState, setGameState] = useState<
@@ -1190,7 +1192,13 @@ export const BobaDino: React.FC<BobaDinoProps> = ({
             initialGameId="boba-dino"
             profile={profile}
             onClose={() => setGameState(trialResults.length === 6 ? 'debrief' : 'intro')}
-            onPlayGame={startNewGame}
+            onPlayGame={(targetGameId) => {
+              if (targetGameId && targetGameId !== 'boba-dino' && onSelectGame) {
+                onSelectGame(targetGameId);
+              } else {
+                startNewGame();
+              }
+            }}
             isEmbeddedInGame={true}
           />
         </div>

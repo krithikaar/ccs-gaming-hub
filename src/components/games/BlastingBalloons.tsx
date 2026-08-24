@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { UserProfile } from '../../types';
+import { UserProfile, GameId } from '../../types';
 import { sounds } from '../../utils/audio';
 import { recordGameScore } from '../../utils/leaderboard';
 import { LeaderboardView } from '../LeaderboardView';
@@ -24,6 +24,7 @@ interface BlastingBalloonsProps {
   profile: UserProfile;
   onBackToHub: () => void;
   onUpdateScore: (gameId: 'blasting-balloons', score: number, earnedXp: number, coins: number) => void;
+  onSelectGame?: (gameId: GameId) => void;
 }
 
 // Game Settings
@@ -101,9 +102,11 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
   profile,
   onBackToHub,
   onUpdateScore,
+  onSelectGame,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lastInteractionTimeRef = useRef(0);
 
   // High-level States
   const [gameState, setGameState] = useState<'intro' | 'playing' | 'gameover' | 'leaderboard'>('intro');
@@ -197,35 +200,30 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
       glow = palette.glow;
     }
 
-    // 2 Upward Lanes (Only 2 balloons on screen at a time)
+    // 2 Upward Lanes (Left and Right)
     const lanes = [
-      { minX: 160, maxX: 320 },
-      { minX: 440, maxX: 600 },
+      { minX: 180, maxX: 300 },
+      { minX: 460, maxX: 580 },
     ];
 
     let laneIndex = preferredLane !== undefined ? preferredLane : 0;
     if (preferredLane === undefined) {
       const activeBalloons = eng.balloons.filter((b) => !b.popped);
-      const laneCounts = [0, 1].map(
-        (l) => activeBalloons.filter((b) => b.lane === l).length
-      );
-      laneIndex = laneCounts.indexOf(Math.min(...laneCounts));
-      if (laneIndex === -1) laneIndex = Math.floor(Math.random() * 2);
+      if (activeBalloons.length > 0) {
+        laneIndex = activeBalloons[0].lane === 0 ? 1 : 0;
+      } else {
+        laneIndex = Math.floor(Math.random() * 2);
+      }
     }
 
     const selectedLane = lanes[laneIndex];
     const x = selectedLane.minX + Math.random() * (selectedLane.maxX - selectedLane.minX);
 
-    // Initial Y position: stagger spawn below bottom
-    const activeInLane = eng.balloons.filter((b) => b.lane === laneIndex && !b.popped);
-    let startY = eng.canvasHeight + BALLOON_RADIUS + 15;
-    if (activeInLane.length > 0) {
-      const maxYInLane = Math.max(...activeInLane.map((b) => b.y));
-      startY = Math.max(startY, maxYInLane + 120);
-    }
+    // Initial Y position: starting from bottom
+    const startY = eng.canvasHeight + BALLOON_RADIUS + 10;
 
-    // Variable upward rising velocity: 0.11 px/ms to 0.22 px/ms (approx 1.8 to 3.6 px per 60fps frame)
-    const baseVy = 0.11 + Math.random() * 0.09;
+    // Upward rising velocity: 0.12 px/ms to 0.18 px/ms
+    const baseVy = 0.12 + Math.random() * 0.05;
 
     return {
       id,
@@ -243,6 +241,25 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
       lane: laneIndex,
     };
   }, []);
+
+  // Manage spacing and release of balloons:
+  // When 1 active balloon gets close to upper line (y <= targetLineY + 145), start the next balloon from bottom
+  const manageBalloonSpawns = useCallback((eng: typeof engineRef.current) => {
+    eng.balloons = eng.balloons.filter((b) => !b.popped);
+    const active = eng.balloons;
+
+    if (active.length === 0) {
+      // 0 active balloons: spawn one immediately from the bottom
+      eng.balloons.push(spawnRisingBalloon());
+    } else if (active.length === 1) {
+      // 1 active balloon: only spawn 2nd balloon when the lead balloon is close to upper target line
+      const lead = active[0];
+      if (lead.y <= eng.targetLineY + 145) {
+        const nextLane = lead.lane === 0 ? 1 : 0;
+        eng.balloons.push(spawnRisingBalloon(undefined, nextLane));
+      }
+    }
+  }, [spawnRisingBalloon]);
 
   // Confetti Particle Explosion
   const triggerConfettiExplosion = (x: number, y: number, color: string, isSuper: boolean = false) => {
@@ -322,13 +339,13 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
     eng.startTime = performance.now();
     eng.lastFrameTime = performance.now();
 
-    // Populate initial 2 rising balloons in 2 separate lanes
+    // Populate initial cadence: Balloon 1 close to upper line, Balloon 2 starting from bottom
     const b1 = spawnRisingBalloon('standard', 0);
     const b2 = spawnRisingBalloon(Math.random() > 0.5 ? 'freeze' : 'speed', 1);
 
-    // Stagger initial Y positions so they don't both arrive at the line at the exact same millisecond
-    b1.y = 390;
-    b2.y = 520;
+    // Initial positions: b1 close to top target line (y=220), b2 at bottom (y=504)
+    b1.y = 220;
+    b2.y = eng.canvasHeight + BALLOON_RADIUS + 10;
 
     eng.balloons = [b1, b2];
 
@@ -366,8 +383,6 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
         : 0;
 
     // Backend Automatic Calculation of Single Final Master Score Metric:
-    // Base score accumulated from precision blast rewards & combo multipliers minus penalties
-    // Accuracy multiplier bonus for consistent line synchronization
     const rawScore = eng.score;
     const accuracyBonus = Math.round(rawScore * (accuracy * 0.25));
     const calculatedMasterScore = Math.max(0, rawScore + accuracyBonus);
@@ -393,267 +408,255 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
     setPlayerRank(record.rank);
   }, [onUpdateScore, profile]);
 
-  // Player Taps/Clicks on Canvas to Blast Balloon (Clicking anywhere is counted!)
-  const handleFireLaser = (targetX: number, targetY: number) => {
+  // Player Taps / Clicks anywhere / Presses Space bar:
+  // ALWAYS evaluates and blasts the balloon closer to the finish line (top target line)
+  const handleFireLaser = useCallback(() => {
     if (gameState !== 'playing') return;
 
-    sounds.playLaserShot();
     const eng = engineRef.current;
+    const activeBalloons = eng.balloons.filter((b) => !b.popped);
+    if (activeBalloons.length === 0) return;
+
+    sounds.playLaserShot();
     const now = performance.now();
 
-    // Check hit on active rising balloons
-    let hitBalloon: RisingBalloon | null = null;
+    // ALWAYS find the balloon closer to the finish line (target line at top)
+    activeBalloons.sort((a, b) => {
+      const distA = Math.abs((a.y - a.radius) - eng.targetLineY);
+      const distB = Math.abs((b.y - b.radius) - eng.targetLineY);
+      return distA - distB;
+    });
 
-    // 1. If clicked directly on or near a specific balloon hitbox, prioritize that balloon
-    for (let i = eng.balloons.length - 1; i >= 0; i--) {
-      const b = eng.balloons[i];
-      if (!b.popped) {
-        const dist = Math.hypot(targetX - b.x, targetY - b.y);
-        if (dist <= b.radius * 1.5) {
-          hitBalloon = b;
-          break;
-        }
-      }
-    }
+    const hitBalloon = activeBalloons[0];
 
-    // 2. If clicked anywhere else on screen/canvas, auto-target the active balloon nearest the target line!
-    if (!hitBalloon) {
-      const activeBalloons = eng.balloons.filter((b) => !b.popped);
-      if (activeBalloons.length > 0) {
-        // Sort by absolute distance of top apex to target line
-        activeBalloons.sort((a, b) => {
-          const distA = Math.abs((a.y - a.radius) - eng.targetLineY);
-          const distB = Math.abs((b.y - b.radius) - eng.targetLineY);
-          return distA - distB;
-        });
-        hitBalloon = activeBalloons[0];
-      }
-    }
+    // Smoothly aim the cannon barrel towards the blasted balloon
+    setCursorPos({ x: hitBalloon.x, y: hitBalloon.y });
 
-    // Laser visual beam directed towards the targeted balloon or tap coordinate
-    const beamTargetX = hitBalloon ? hitBalloon.x : targetX;
-    const beamTargetY = hitBalloon ? hitBalloon.y : targetY;
+    // Laser visual beam directed towards the targeted balloon
     eng.laserBeams.push({
       startX: eng.gunMuzzleX,
       startY: eng.gunMuzzleY,
-      targetX: beamTargetX,
-      targetY: beamTargetY,
+      targetX: hitBalloon.x,
+      targetY: hitBalloon.y,
       life: 8,
       color: eng.slowMoTimerMs > 0 ? '#38bdf8' : eng.speedRushTimerMs > 0 ? '#fde047' : '#f43f5e',
     });
 
-    if (hitBalloon) {
-      hitBalloon.popped = true;
+    hitBalloon.popped = true;
 
-      // Calculate exact timing difference relative to Target Line
-      // Balloon top apex = hitBalloon.y - hitBalloon.radius
-      // Distance from top apex to line:
-      // When top apex is below line, distToLine > 0 (hasn't reached line yet)
-      // When top apex is at line, distToLine = 0
-      // When top apex is above line, distToLine < 0 (passed line)
-      const topApexY = hitBalloon.y - hitBalloon.radius;
-      const distToLine = topApexY - eng.targetLineY;
+    // Calculate exact timing difference relative to Target Line
+    const topApexY = hitBalloon.y - hitBalloon.radius;
+    const distToLine = topApexY - eng.targetLineY;
 
-      // Effective rising velocity (px/ms)
-      const timeMultiplier = eng.slowMoTimerMs > 0 ? 0.5 : eng.speedRushTimerMs > 0 ? 2.0 : 1.0;
-      const effectiveVy = hitBalloon.vy * timeMultiplier;
-      const offsetMs = Math.round(distToLine / effectiveVy);
-      const absOffsetMs = Math.abs(offsetMs);
+    // Effective rising velocity (px/ms)
+    const timeMultiplier = eng.slowMoTimerMs > 0 ? 0.5 : eng.speedRushTimerMs > 0 ? 2.0 : 1.0;
+    const effectiveVy = hitBalloon.vy * timeMultiplier;
+    const offsetMs = Math.round(distToLine / effectiveVy);
+    const absOffsetMs = Math.abs(offsetMs);
 
-      // Evaluate 30ms, 100ms, and Mistimed Windows
-      if (absOffsetMs <= SUB_30MS_WINDOW) {
-        // ========================================================
-        // 🎯 SUB-30MS WINDOW: HIGH POINTS (+300 PTS + COMBO)!
-        // ========================================================
-        hitBalloon.popReason = 'perfect_30';
-        sounds.playPop();
-        sounds.playHitChime();
-        triggerConfettiExplosion(hitBalloon.x, hitBalloon.y, hitBalloon.color, true);
+    // Evaluate 30ms, 100ms, and Mistimed Windows
+    if (absOffsetMs <= SUB_30MS_WINDOW) {
+      // ========================================================
+      // 🎯 SUB-30MS WINDOW: HIGH POINTS (+300 PTS + COMBO)!
+      // ========================================================
+      hitBalloon.popReason = 'perfect_30';
+      sounds.playPop();
+      sounds.playHitChime();
+      triggerConfettiExplosion(hitBalloon.x, hitBalloon.y, hitBalloon.color, true);
 
-        const newCombo = eng.combo + 1;
-        eng.combo = newCombo;
-        eng.maxCombo = Math.max(eng.maxCombo, newCombo);
-        setCombo(newCombo);
-        setMaxCombo(eng.maxCombo);
+      const newCombo = eng.combo + 1;
+      eng.combo = newCombo;
+      eng.maxCombo = Math.max(eng.maxCombo, newCombo);
+      setCombo(newCombo);
+      setMaxCombo(eng.maxCombo);
 
-        const comboBonus = newCombo * 25;
-        const totalPoints = 300 + comboBonus;
-        eng.score += totalPoints;
-        setScore(eng.score);
+      const comboBonus = newCombo * 25;
+      const totalPoints = 300 + comboBonus;
+      eng.score += totalPoints;
+      setScore(eng.score);
 
-        // Power-up Triggers: 4 seconds duration
-        if (hitBalloon.type === 'freeze') {
-          eng.slowMoTimerMs = 4000;
-          eng.speedRushTimerMs = 0;
-          sounds.playZenChime(880);
-          addFloatingFeedback(
-            hitBalloon.x,
-            hitBalloon.y - 20,
-            `❄️ 30MS SLOW-MO BLAST (4s)! +${totalPoints}`,
-            '#38bdf8',
-            `Exact: ±${absOffsetMs}ms (Sub-30ms High Points)`
-          );
-        } else if (hitBalloon.type === 'speed') {
-          eng.speedRushTimerMs = 4000;
-          eng.slowMoTimerMs = 0;
-          sounds.playSpeedWarp();
-          addFloatingFeedback(
-            hitBalloon.x,
-            hitBalloon.y - 20,
-            `⚡ 30MS HYPERSPEED (4s)! +${totalPoints}`,
-            '#fde047',
-            `Exact: ±${absOffsetMs}ms (Sub-30ms High Points)`
-          );
-        } else {
-          addFloatingFeedback(
-            hitBalloon.x,
-            hitBalloon.y - 20,
-            `🎯 GODLY 30MS BLAST! +${totalPoints}`,
-            '#fbbf24',
-            `Exact: ±${absOffsetMs}ms • HIGH POINTS`
-          );
-        }
-
-        const record: BlastRecord = {
-          balloonId: hitBalloon.id,
-          type: hitBalloon.type,
-          offsetMs,
-          isSub30: true,
-          isSub100: true,
-          isMistake: false,
-          scoreDelta: totalPoints,
-          timestamp: now,
-        };
-        eng.records.push(record);
-        setRecords([...eng.records]);
-      } else if (absOffsetMs <= SUB_100MS_WINDOW) {
-        // ========================================================
-        // ⚡ SUB-100MS WINDOW: PLUS POINTS (LOWER) (+120 PTS)!
-        // ========================================================
-        hitBalloon.popReason = 'good_100';
-        sounds.playPop();
-        sounds.playHitChime();
-        triggerConfettiExplosion(hitBalloon.x, hitBalloon.y, hitBalloon.color, false);
-
-        const newCombo = eng.combo + 1;
-        eng.combo = newCombo;
-        eng.maxCombo = Math.max(eng.maxCombo, newCombo);
-        setCombo(newCombo);
-        setMaxCombo(eng.maxCombo);
-
-        const comboBonus = newCombo * 10;
-        const totalPoints = 120 + comboBonus;
-        eng.score += totalPoints;
-        setScore(eng.score);
-
-        // Power-up Triggers: 4 seconds duration
-        if (hitBalloon.type === 'freeze') {
-          eng.slowMoTimerMs = 4000;
-          eng.speedRushTimerMs = 0;
-          sounds.playZenChime(880);
-          addFloatingFeedback(
-            hitBalloon.x,
-            hitBalloon.y - 20,
-            `❄️ SLOW-MOTION (4s)! +${totalPoints}`,
-            '#38bdf8',
-            `Offset: ±${absOffsetMs}ms (<100ms)`
-          );
-        } else if (hitBalloon.type === 'speed') {
-          eng.speedRushTimerMs = 4000;
-          eng.slowMoTimerMs = 0;
-          sounds.playSpeedWarp();
-          addFloatingFeedback(
-            hitBalloon.x,
-            hitBalloon.y - 20,
-            `⚡ 2X HYPERSPEED (4s)! +${totalPoints}`,
-            '#fde047',
-            `Offset: ±${absOffsetMs}ms (<100ms)`
-          );
-        } else {
-          addFloatingFeedback(
-            hitBalloon.x,
-            hitBalloon.y - 20,
-            `⚡ GOOD TIMING! +${totalPoints}`,
-            '#4ade80',
-            `Offset: ±${absOffsetMs}ms (<100ms Window)`
-          );
-        }
-
-        const record: BlastRecord = {
-          balloonId: hitBalloon.id,
-          type: hitBalloon.type,
-          offsetMs,
-          isSub30: false,
-          isSub100: true,
-          isMistake: false,
-          scoreDelta: totalPoints,
-          timestamp: now,
-        };
-        eng.records.push(record);
-        setRecords([...eng.records]);
-      } else {
-        // ========================================================
-        // ⚠️ MISTIMED JUDGEMENT: NEGATIVE POINTS!
-        // ========================================================
-        sounds.playFalseAlarmBuzz();
-        eng.combo = 0;
-        setCombo(0);
-
-        const isEarly = offsetMs > 0;
-        hitBalloon.popReason = isEarly ? 'early' : 'late';
-
-        const penalty = isEarly ? 120 : 80;
-        eng.score = Math.max(0, eng.score - penalty);
-        setScore(eng.score);
-
-        // Gray puff particles
-        for (let p = 0; p < 10; p++) {
-          eng.particles.push({
-            x: hitBalloon.x,
-            y: hitBalloon.y,
-            vx: (Math.random() - 0.5) * 4,
-            vy: (Math.random() - 0.5) * 4,
-            color: '#64748b',
-            life: 20,
-            maxLife: 20,
-            size: 3,
-            rotation: 0,
-            vRot: 0,
-            isConfetti: false,
-          });
-        }
-
+      // Power-up Triggers: 4 seconds duration
+      if (hitBalloon.type === 'freeze') {
+        eng.slowMoTimerMs = 4000;
+        eng.speedRushTimerMs = 0;
+        sounds.playZenChime(880);
         addFloatingFeedback(
           hitBalloon.x,
           hitBalloon.y - 20,
-          isEarly ? `⚠️ TOO EARLY! -${penalty}` : `⏱️ TOO LATE! -${penalty}`,
-          '#fb7185',
-          isEarly
-            ? `-${absOffsetMs}ms before target line`
-            : `+${absOffsetMs}ms past target line`
+          `❄️ 30MS SLOW-MO BLAST (4s)! +${totalPoints}`,
+          '#38bdf8',
+          `Exact: ±${absOffsetMs}ms (Sub-30ms High Points)`
         );
-
-        const record: BlastRecord = {
-          balloonId: hitBalloon.id,
-          type: hitBalloon.type,
-          offsetMs,
-          isSub30: false,
-          isSub100: false,
-          isMistake: true,
-          scoreDelta: -penalty,
-          timestamp: now,
-        };
-        eng.records.push(record);
-        setRecords([...eng.records]);
+      } else if (hitBalloon.type === 'speed') {
+        eng.speedRushTimerMs = 4000;
+        eng.slowMoTimerMs = 0;
+        sounds.playSpeedWarp();
+        addFloatingFeedback(
+          hitBalloon.x,
+          hitBalloon.y - 20,
+          `⚡ 30MS HYPERSPEED (4s)! +${totalPoints}`,
+          '#fde047',
+          `Exact: ±${absOffsetMs}ms (Sub-30ms High Points)`
+        );
+      } else {
+        addFloatingFeedback(
+          hitBalloon.x,
+          hitBalloon.y - 20,
+          `🎯 GODLY 30MS BLAST! +${totalPoints}`,
+          '#fbbf24',
+          `Exact: ±${absOffsetMs}ms • HIGH POINTS`
+        );
       }
 
-      // Immediately replenish balloons to maintain exactly 2 rising balloons on screen
-      eng.balloons = eng.balloons.filter((b) => !b.popped);
-      while (eng.balloons.length < 2) {
-        eng.balloons.push(spawnRisingBalloon());
+      const record: BlastRecord = {
+        balloonId: hitBalloon.id,
+        type: hitBalloon.type,
+        offsetMs,
+        isSub30: true,
+        isSub100: true,
+        isMistake: false,
+        scoreDelta: totalPoints,
+        timestamp: now,
+      };
+      eng.records.push(record);
+      setRecords([...eng.records]);
+    } else if (absOffsetMs <= SUB_100MS_WINDOW) {
+      // ========================================================
+      // ⚡ SUB-100MS WINDOW: PLUS POINTS (LOWER) (+120 PTS)!
+      // ========================================================
+      hitBalloon.popReason = 'good_100';
+      sounds.playPop();
+      sounds.playHitChime();
+      triggerConfettiExplosion(hitBalloon.x, hitBalloon.y, hitBalloon.color, false);
+
+      const newCombo = eng.combo + 1;
+      eng.combo = newCombo;
+      eng.maxCombo = Math.max(eng.maxCombo, newCombo);
+      setCombo(newCombo);
+      setMaxCombo(eng.maxCombo);
+
+      const comboBonus = newCombo * 10;
+      const totalPoints = 120 + comboBonus;
+      eng.score += totalPoints;
+      setScore(eng.score);
+
+      // Power-up Triggers: 4 seconds duration
+      if (hitBalloon.type === 'freeze') {
+        eng.slowMoTimerMs = 4000;
+        eng.speedRushTimerMs = 0;
+        sounds.playZenChime(880);
+        addFloatingFeedback(
+          hitBalloon.x,
+          hitBalloon.y - 20,
+          `❄️ SLOW-MOTION (4s)! +${totalPoints}`,
+          '#38bdf8',
+          `Offset: ±${absOffsetMs}ms (<100ms)`
+        );
+      } else if (hitBalloon.type === 'speed') {
+        eng.speedRushTimerMs = 4000;
+        eng.slowMoTimerMs = 0;
+        sounds.playSpeedWarp();
+        addFloatingFeedback(
+          hitBalloon.x,
+          hitBalloon.y - 20,
+          `⚡ 2X HYPERSPEED (4s)! +${totalPoints}`,
+          '#fde047',
+          `Offset: ±${absOffsetMs}ms (<100ms)`
+        );
+      } else {
+        addFloatingFeedback(
+          hitBalloon.x,
+          hitBalloon.y - 20,
+          `⚡ GOOD TIMING! +${totalPoints}`,
+          '#4ade80',
+          `Offset: ±${absOffsetMs}ms (<100ms Window)`
+        );
       }
+
+      const record: BlastRecord = {
+        balloonId: hitBalloon.id,
+        type: hitBalloon.type,
+        offsetMs,
+        isSub30: false,
+        isSub100: true,
+        isMistake: false,
+        scoreDelta: totalPoints,
+        timestamp: now,
+      };
+      eng.records.push(record);
+      setRecords([...eng.records]);
+    } else {
+      // ========================================================
+      // ⚠️ MISTIMED JUDGEMENT: NEGATIVE POINTS!
+      // ========================================================
+      sounds.playFalseAlarmBuzz();
+      eng.combo = 0;
+      setCombo(0);
+
+      const isEarly = offsetMs > 0;
+      hitBalloon.popReason = isEarly ? 'early' : 'late';
+
+      const penalty = isEarly ? 120 : 80;
+      eng.score = Math.max(0, eng.score - penalty);
+      setScore(eng.score);
+
+      // Gray puff particles
+      for (let p = 0; p < 10; p++) {
+        eng.particles.push({
+          x: hitBalloon.x,
+          y: hitBalloon.y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          color: '#64748b',
+          life: 20,
+          maxLife: 20,
+          size: 3,
+          rotation: 0,
+          vRot: 0,
+          isConfetti: false,
+        });
+      }
+
+      addFloatingFeedback(
+        hitBalloon.x,
+        hitBalloon.y - 20,
+        isEarly ? `⚠️ TOO EARLY! -${penalty}` : `⏱️ TOO LATE! -${penalty}`,
+        '#fb7185',
+        isEarly
+          ? `-${absOffsetMs}ms before target line`
+          : `+${absOffsetMs}ms past target line`
+      );
+
+      const record: BlastRecord = {
+        balloonId: hitBalloon.id,
+        type: hitBalloon.type,
+        offsetMs,
+        isSub30: false,
+        isSub100: false,
+        isMistake: true,
+        scoreDelta: -penalty,
+        timestamp: now,
+      };
+      eng.records.push(record);
+      setRecords([...eng.records]);
     }
-  };
+
+    // Refresh and maintain the rhythmic cadence
+    manageBalloonSpawns(eng);
+  }, [gameState, manageBalloonSpawns]);
+
+  // Unified Interaction Handler for Touch & Click with ghost-click suppression
+  const handleInteraction = useCallback((isTouch: boolean = false) => {
+    if (gameState !== 'playing') return;
+
+    const now = performance.now();
+    if (!isTouch && now - lastInteractionTimeRef.current < 350) {
+      // Ignore ghost synthetic clicks that follow touchstart on mobile
+      return;
+    }
+    lastInteractionTimeRef.current = now;
+    handleFireLaser();
+  }, [gameState, handleFireLaser]);
 
   // Main 60 FPS Canvas Physics & Render Loop
   useEffect(() => {
@@ -703,10 +706,8 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
         return;
       }
 
-      // Maintain exactly 2 concurrent balloons on screen
-      while (eng.balloons.length < 2) {
-        eng.balloons.push(spawnRisingBalloon());
-      }
+      // Maintain rhythmic spacing: when lead balloon is close to upper line, spawn from bottom
+      manageBalloonSpawns(eng);
 
       // ----------------------------------------------------
       // 1. UPDATE RISING BALLOONS TOWARDS TARGET LINE
@@ -766,11 +767,8 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
         }
       });
 
-      // Filter popped balloons and replenish (maintain max 2 balloons)
-      eng.balloons = eng.balloons.filter((b) => !b.popped);
-      while (eng.balloons.length < 2) {
-        eng.balloons.push(spawnRisingBalloon());
-      }
+      // Filter popped balloons and update spacing
+      manageBalloonSpawns(eng);
 
       // ----------------------------------------------------
       // 2. UPDATE PARTICLES
@@ -1105,9 +1103,9 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
       isRunning = false;
       cancelAnimationFrame(engineRef.current.animFrameId);
     };
-  }, [gameState, cursorPos, spawnRisingBalloon, endGame]);
+  }, [gameState, cursorPos, endGame, manageBalloonSpawns]);
 
-  // Handle Mouse & Click Actions
+  // Handle Mouse Move over Canvas (only updates orientation)
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1119,43 +1117,18 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
     setCursorPos({ x, y });
   };
 
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
-    handleFireLaser(x, y);
-  };
-
-  const handleCanvasTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const touch = e.touches[0];
-    if (!touch) return;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (touch.clientX - rect.left) * scaleX;
-    const y = (touch.clientY - rect.top) * scaleY;
-    setCursorPos({ x, y });
-    handleFireLaser(x, y);
-  };
-
   // Keyboard Spacebar & Enter Support
   useEffect(() => {
     if (gameState !== 'playing') return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
-        handleFireLaser(cursorPos.x, cursorPos.y);
+        handleFireLaser();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameState, cursorPos]);
+  }, [gameState, handleFireLaser]);
 
   // Temporal Assessment Rank
   const getTemporalRank = () => {
@@ -1204,26 +1177,26 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 bg-slate-950 text-white select-none">
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4 mb-5">
         <button
           onClick={() => {
             sounds.playClick();
             onBackToHub();
           }}
-          className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white font-cyber text-xs tracking-wider transition-all cursor-pointer"
+          className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white font-cyber text-xs tracking-wider transition-all cursor-pointer min-h-[40px]"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>BACK TO HUB</span>
         </button>
 
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-amber-500 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-amber-500 flex items-center justify-center text-xl sm:text-2xl shadow-lg shadow-cyan-500/30">
             🎯
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-black font-cyber text-amber-300 flex items-center gap-2">
+            <h1 className="text-sm sm:text-lg font-black font-cyber text-amber-300 flex items-center gap-2">
               <span>BLASTING BALLOONS</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono-tag">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono-tag hidden sm:inline-block">
                 TARGET LINE
               </span>
             </h1>
@@ -1234,7 +1207,7 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
         </div>
 
         {/* Live Status Stats */}
-        <div className="flex items-center gap-2 font-cyber text-xs sm:text-sm">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 font-cyber text-xs sm:text-sm">
           <button
             id="balloons-leaderboard-btn"
             onClick={() => {
@@ -1375,15 +1348,29 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
           </div>
 
           {/* Interactive Canvas Frame */}
-          <div className="relative w-full rounded-3xl border-2 border-slate-800 overflow-hidden shadow-2xl bg-slate-950 aspect-[16/9] max-h-[460px] flex items-center justify-center cursor-crosshair">
+          <div
+            className="relative w-full rounded-2xl sm:rounded-3xl border-2 border-slate-800 overflow-hidden shadow-2xl bg-slate-950 aspect-[4/3] sm:aspect-[16/9] max-h-[460px] flex items-center justify-center cursor-crosshair touch-none select-none"
+            onClick={() => handleInteraction(false)}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              handleInteraction(true);
+            }}
+          >
             <canvas
               ref={canvasRef}
               width={760}
               height={460}
               onMouseMove={handleCanvasMouseMove}
-              onClick={handleCanvasClick}
-              onTouchStart={handleCanvasTouchStart}
-              className="w-full h-full cursor-crosshair touch-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleInteraction(false);
+              }}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleInteraction(true);
+              }}
+              className="w-full h-full cursor-crosshair touch-none select-none"
             />
           </div>
 
@@ -1525,7 +1512,13 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
             initialGameId="blasting-balloons"
             profile={profile}
             onClose={() => setGameState('gameover')}
-            onPlayGame={startGame}
+            onPlayGame={(targetGameId) => {
+              if (targetGameId && targetGameId !== 'blasting-balloons' && onSelectGame) {
+                onSelectGame(targetGameId);
+              } else {
+                startGame();
+              }
+            }}
             isEmbeddedInGame={true}
           />
         </div>

@@ -121,6 +121,7 @@ export default function App() {
             <AnimalMindControl
               profile={profile}
               onBackToHub={() => setActiveGame(null)}
+              onSelectGame={(gameId) => setActiveGame(gameId)}
               onUpdateScore={handleUpdateScore}
             />
           )}
@@ -129,6 +130,7 @@ export default function App() {
             <SpiderRabbitGame
               profile={profile}
               onBackToHub={() => setActiveGame(null)}
+              onSelectGame={(gameId) => setActiveGame(gameId)}
               onUpdateScore={handleUpdateScore}
             />
           )}
@@ -137,6 +139,7 @@ export default function App() {
             <MusicMatrix
               profile={profile}
               onBackToHub={() => setActiveGame(null)}
+              onSelectGame={(gameId) => setActiveGame(gameId)}
               onUpdateScore={handleUpdateScore}
             />
           )}
@@ -145,6 +148,7 @@ export default function App() {
             <BlastingBalloons
               profile={profile}
               onBackToHub={() => setActiveGame(null)}
+              onSelectGame={(gameId) => setActiveGame(gameId)}
               onUpdateScore={handleUpdateScore}
             />
           )}
@@ -153,6 +157,7 @@ export default function App() {
             <LearnToBreathe
               profile={profile}
               onBackToHub={() => setActiveGame(null)}
+              onSelectGame={(gameId) => setActiveGame(gameId)}
               onUpdateScore={handleUpdateScore}
             />
           )}
@@ -161,6 +166,7 @@ export default function App() {
             <BobaDino
               profile={profile}
               onBackToHub={() => setActiveGame(null)}
+              onSelectGame={(gameId) => setActiveGame(gameId)}
               onUpdateScore={handleUpdateScore}
             />
           )}
