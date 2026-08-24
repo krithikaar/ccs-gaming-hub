@@ -1,0 +1,6 @@
+{
+  "name": "CCS Gaming Hub",
+  "description": "An interactive cyberpunk gaming hub featuring 5 mini-games (Animal Mind Control, Spider-Rabbit Speed Trials, Music Matrix, Blasting Balloons, Learn to Breathe with Agent Blowfish) with real-time audio, global leaderboards, and player passports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
