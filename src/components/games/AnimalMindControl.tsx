@@ -910,20 +910,53 @@ export const AnimalMindControl: React.FC<AnimalMindControlProps> = ({
           </div>
 
           {/* Brain Power Unlocked Explanation Box */}
-          <div className="p-6 rounded-3xl bg-slate-950/80 border-2 border-violet-500/40 text-left space-y-3 shadow-xl">
-            <div className="flex items-center gap-2">
+          <div className="p-6 rounded-3xl bg-slate-950/90 border-2 border-violet-500/40 text-left space-y-4 shadow-xl">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-violet-500/20 text-violet-300 border border-violet-500/40 font-cyber">
-                🧠 BRAIN POWER UNLOCKED
+                🧠 BRAIN POWER UNLOCKED: SENSE OF AGENCY
+              </span>
+              <span className="text-xs font-mono-tag text-amber-300 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>The &quot;I Did That!&quot; Superpower</span>
               </span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-amber-300 uppercase font-cyber tracking-tight flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
-              <span>Sense of Agency (Action Ownership)</span>
+
+            <h3 className="text-lg sm:text-xl font-black text-white uppercase font-cyber tracking-tight">
+              Wait... Why Did We Play This? So What Just Happened?
             </h3>
-            <div className="p-4 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-slate-200 text-xs sm:text-sm leading-relaxed space-y-2">
-              <p>
-                <strong className="text-pink-300">What you just did:</strong> You figured out which animal was listening to your moves! When your brain plans a movement, it predicts what will happen next. Matching your moves to the animal proved your brain&apos;s superpower: <strong className="text-amber-300">Sense of Agency</strong>—knowing that you are the one in the driver&apos;s seat of your own actions.
-              </p>
+
+            <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed font-body">
+              {/* Concept Card 1: What is Agency */}
+              <div className="p-4 rounded-2xl bg-violet-500/10 border border-violet-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-pink-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>🎮</span>
+                  <span>1. What is &quot;Sense of Agency&quot;?</span>
+                </div>
+                <p>
+                  When you lift your arm, kick a soccer ball, or tap a button, how does your brain know that <strong className="text-white font-semibold">YOU</strong> made it happen—and not somebody else moving your arm for you? That deep gut feeling of being in the driver&apos;s seat of your own body and actions is called the <strong className="text-amber-300 font-semibold">Sense of Agency</strong> (&quot;I caused this!&quot;).
+                </p>
+              </div>
+
+              {/* Concept Card 2: How your brain cracked the puzzle */}
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-amber-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>🕵️</span>
+                  <span>2. How Your Brain Figured Out the Secret Animal:</span>
+                </div>
+                <p>
+                  In this game, four cute animals were hopping all over the screen. Three were decoys doing their own thing, but <strong className="text-white font-semibold">one secret animal was wired to your fingertips</strong>. Every time you pressed an arrow, your brain predicted: <em>&quot;If I press LEFT, my animal should dart LEFT right now.&quot;</em> When you saw that exact match in timing and direction, your brain shouted: <strong className="text-cyan-300 font-semibold">&quot;Aha! That one is under my control!&quot;</strong>
+                </p>
+              </div>
+
+              {/* Concept Card 3: Real world connection */}
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-slate-300">
+                <span className="font-cyber font-bold text-emerald-300 text-xs block mb-1">
+                  🌟 Your Real-Life Brain Superpower:
+                </span>
+                <p className="text-xs">
+                  Your sense of agency is active all day! It lets you write with a pencil, ride a bicycle, dance, and play sports without getting confused about who is in control. It&apos;s the glue that connects your mind&apos;s thoughts to the physical world!
+                </p>
+              </div>
             </div>
           </div>
 

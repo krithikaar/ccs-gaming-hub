@@ -897,23 +897,71 @@ export const LearnToBreathe: React.FC<LearnToBreatheProps> = ({
           </div>
 
           {/* Brain Power Unlocked Explanation Box */}
-          <div className="p-6 rounded-3xl bg-slate-950/80 border-2 border-cyan-500/40 text-left space-y-3 shadow-xl max-w-xl mx-auto">
-            <div className="flex items-center gap-2">
+          <div className="p-6 rounded-3xl bg-slate-950/90 border-2 border-cyan-500/40 text-left space-y-4 shadow-xl max-w-xl mx-auto">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-cyber">
-                🧠 BRAIN POWER UNLOCKED
+                🧠 BRAIN POWER UNLOCKED: MIND-BODY CONNECTION
+              </span>
+              <span className="text-xs font-mono-tag text-amber-300 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Your Emotional Remote Control</span>
               </span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-amber-300 uppercase font-cyber tracking-tight flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
-              <span>Respiration-Emotion Loop</span>
+
+            <h3 className="text-lg sm:text-xl font-black text-white uppercase font-cyber tracking-tight">
+              Wait... Why Did We Watch Agent Blowfish? What is the Mind-Body Link?
             </h3>
-            <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-slate-200 text-xs sm:text-sm leading-relaxed space-y-2">
-              <p>
-                <strong className="text-cyan-300">What you just did:</strong> You decoded Agent Blowfish&apos;s feelings just by watching its breaths and faces! Your brain and body share a two-way street: emotions change how you breathe, and changing how you breathe can shift how you feel.
-              </p>
-              <p className="text-amber-200 pt-1 border-t border-cyan-500/20">
-                <strong className="text-amber-300">Fun Fact:</strong> Professional actors use this exact trick—changing their breathing speed and depth to make themselves feel happy, scared, or calm on cue!
-              </p>
+
+            <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed font-body">
+              {/* Concept Card 1: Different Emotions = Different Breaths */}
+              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-cyan-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>🌊</span>
+                  <span>1. Different Emotions Create Unique Breathing Patterns:</span>
+                </div>
+                <p>
+                  Did you notice how Agent Blowfish breathed completely differently for every feeling? Your body does the exact same thing:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs text-slate-300">
+                  <div className="p-2 rounded-xl bg-slate-950/60 border border-purple-500/30">
+                    <span className="text-purple-300 font-bold block">😨 Fear / Anxiety:</span>
+                    <span>Fast, shallow chest gasps preparing your body to run or hide.</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-950/60 border border-rose-500/30">
+                    <span className="text-rose-300 font-bold block">😡 Anger / Rage:</span>
+                    <span>Short, sharp huffs building explosive internal pressure.</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-950/60 border border-amber-500/30">
+                    <span className="text-amber-300 font-bold block">😄 Joy / Delight:</span>
+                    <span>Bouncy, energetic, open breaths that bubble with laughter.</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-950/60 border border-emerald-500/30">
+                    <span className="text-emerald-300 font-bold block">🧘 Calm / Peace:</span>
+                    <span>Slow, rhythmic, deep belly swells like gentle ocean tides.</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Concept Card 2: The Two-Way Street */}
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-amber-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>🔄</span>
+                  <span>2. The Mind-Body Connection is a Two-Way Street!</span>
+                </div>
+                <p>
+                  Your emotions automatically change how your lungs breathe (<strong className="text-white font-semibold">Mind ➡️ Body</strong>). But here is the secret superpower: <strong className="text-amber-300 font-semibold">it works in reverse too (Body ➡️ Mind)!</strong> When you choose to take slow, gentle belly breaths, you activate your body&apos;s calming nerve (the vagus nerve), sending a physical message straight back to your brain saying: <em>&quot;Everything is okay. We are safe.&quot;</em>
+                </p>
+              </div>
+
+              {/* Concept Card 3: Real world superpower */}
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-slate-300">
+                <span className="font-cyber font-bold text-emerald-300 text-xs block mb-1">
+                  🌟 Your Real-Life Brain Superpower:
+                </span>
+                <p className="text-xs">
+                  Whenever you feel anxious before a big test, angry during a game, or unable to fall asleep, remember Agent Blowfish! Taking 3 to 5 slow, deep &quot;Calm Ocean&quot; breaths is your personal built-in remote control to soothe your emotions anytime, anywhere.
+                </p>
+              </div>
             </div>
           </div>
 

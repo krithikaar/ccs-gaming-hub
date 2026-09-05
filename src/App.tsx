@@ -13,7 +13,6 @@ import { SpiderRabbitGame } from './components/games/SpiderRabbitGame';
 import { MusicMatrix } from './components/games/MusicMatrix';
 import { BlastingBalloons } from './components/games/BlastingBalloons';
 import { LearnToBreathe } from './components/games/LearnToBreathe';
-import { BobaDino } from './components/games/BobaDino';
 import { SpiderRabbitAvatar } from './components/SpiderRabbitAvatar';
 
 import { Sparkles, Trophy, Flame, Play, Star, Shield, HelpCircle, UserCheck } from 'lucide-react';
@@ -155,15 +154,6 @@ export default function App() {
 
           {activeGame === 'learn-to-breathe' && (
             <LearnToBreathe
-              profile={profile}
-              onBackToHub={() => setActiveGame(null)}
-              onSelectGame={(gameId) => setActiveGame(gameId)}
-              onUpdateScore={handleUpdateScore}
-            />
-          )}
-
-          {activeGame === 'boba-dino' && (
-            <BobaDino
               profile={profile}
               onBackToHub={() => setActiveGame(null)}
               onSelectGame={(gameId) => setActiveGame(gameId)}
@@ -354,9 +344,9 @@ export default function App() {
           </div>
         )}
 
-        {/* Quick Launch Cards Row: Blasting Balloons, Agent Blowfish & BobaDino */}
+        {/* Quick Launch Cards Row: Blasting Balloons & Agent Blowfish */}
         {activeCategory === 'All Games' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div
               onClick={() => handlePlayGame('blasting-balloons')}
               className="bg-[#0f172a] rounded-3xl p-6 border border-white/10 flex items-center justify-between group hover:border-yellow-400 transition-all cursor-pointer"
@@ -400,33 +390,6 @@ export default function App() {
                 05
               </div>
             </div>
-
-            <div
-              onClick={() => handlePlayGame('boba-dino')}
-              className="bg-gradient-to-br from-emerald-950/80 via-[#0a1b15] to-[#1a0e22] rounded-3xl p-6 border-2 border-emerald-500/30 flex items-center justify-between group hover:border-emerald-400 transition-all cursor-pointer shadow-lg hover:shadow-emerald-500/20"
-            >
-              <div className="flex items-center gap-4 sm:gap-5">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-400 to-lime-500 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform text-slate-950">
-                  🦖
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-pink-500/30 text-pink-300 border border-pink-500/40 font-cyber">
-                      NEW EXPERIMENT
-                    </span>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-black uppercase italic font-cyber text-white">
-                    BOBADINO CANDY SHOP
-                  </h3>
-                  <p className="text-emerald-400/80 text-[11px] font-bold uppercase tracking-wider font-mono-tag">
-                    Intentional Binding Time Warp
-                  </p>
-                </div>
-              </div>
-              <div className="text-2xl font-black text-emerald-400/30 group-hover:text-emerald-400 font-cyber transition-colors">
-                06
-              </div>
-            </div>
           </div>
         )}
       </div>
@@ -442,7 +405,7 @@ export default function App() {
           </div>
 
           <span className="text-xs text-cyan-400/80 font-mono-tag font-bold uppercase tracking-widest">
-            ALL 6 GAMES PLAYABLE // INSTANT LAUNCH
+            ALL 5 GAMES PLAYABLE // INSTANT LAUNCH
           </span>
         </div>
 
@@ -468,7 +431,6 @@ export default function App() {
                     'music-matrix': 0,
                     'blasting-balloons': 0,
                     'learn-to-breathe': 0,
-                    'boba-dino': 0,
                   },
                   gamesPlayed: {
                     'animal-mind-control': 0,
@@ -476,7 +438,6 @@ export default function App() {
                     'music-matrix': 0,
                     'blasting-balloons': 0,
                     'learn-to-breathe': 0,
-                    'boba-dino': 0,
                   },
                   joinedAt: new Date().toISOString(),
                 }

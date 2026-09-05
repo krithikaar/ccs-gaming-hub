@@ -1977,20 +1977,53 @@ export const SpiderRabbitGame: React.FC<SpiderRabbitGameProps> = ({
           </div>
 
           {/* Brain Power Unlocked Explanation Box */}
-          <div className="p-6 rounded-3xl bg-slate-950/80 border-2 border-cyan-500/40 text-left space-y-3 shadow-xl">
-            <div className="flex items-center gap-2">
+          <div className="p-6 rounded-3xl bg-slate-950/90 border-2 border-cyan-500/40 text-left space-y-4 shadow-xl">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-cyber">
-                🧠 BRAIN POWER UNLOCKED
+                🧠 BRAIN POWER UNLOCKED: VISUO-MOTOR COUPLING & AGENCY
+              </span>
+              <span className="text-xs font-mono-tag text-amber-300 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Eye-Hand Teamwork</span>
               </span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-yellow-300 uppercase font-cyber tracking-tight flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-yellow-400" />
-              <span>Motor Error Detection & Control</span>
+
+            <h3 className="text-lg sm:text-xl font-black text-white uppercase font-cyber tracking-tight">
+              Wait... Why Did We Guide Spider-Rabbit? So What Just Happened?
             </h3>
-            <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-slate-200 text-xs sm:text-sm leading-relaxed space-y-2">
-              <p>
-                <strong className="text-cyan-300">What you just did:</strong> Keeping Spider-Rabbit centered wasn&apos;t easy! Your brain constantly compared what you wanted to happen with what was actually happening on screen. Spotting when Spider-Rabbit drifted helped test how quickly your brain catches tiny errors and keeps you in total control.
-              </p>
+
+            <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed font-body">
+              {/* Concept Card 1: Visuo-Motor Coupling */}
+              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-cyan-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>👀 + ✋</span>
+                  <span>1. What is &quot;Visuo-Motor Coupling&quot;?</span>
+                </div>
+                <p>
+                  <strong className="text-cyan-200 font-semibold">&quot;Visuo&quot;</strong> means what your eyes see. <strong className="text-cyan-200 font-semibold">&quot;Motor&quot;</strong> means how your muscles move your fingers and hands. When you steer Spider-Rabbit, your brain hooks them together into a high-speed feedback loop: your eyes watch the path, and your hand steers to match it. That super-fast teamwork is called <strong className="text-white font-semibold">visuo-motor coupling</strong>.
+                </p>
+              </div>
+
+              {/* Concept Card 2: Agency & The Carrot Button */}
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-amber-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>🥕</span>
+                  <span>2. How the Mismatches Proved Your &quot;Agency&quot;:</span>
+                </div>
+                <p>
+                  As long as Spider-Rabbit followed your hand, you felt in total command—that&apos;s your <strong className="text-white font-semibold">Sense of Agency</strong> (&quot;I am in control!&quot;). But every so often, a sneaky wind or distraction knocked Spider-Rabbit off track. Your eyes saw Spider-Rabbit slide sideways, but your hand knew <em>you didn&apos;t do that!</em> Your brain instantly caught the mismatch between sight and touch: <strong className="text-yellow-300 font-semibold">&quot;Hey, that wasn&apos;t me!&quot;</strong>—and you slammed the Carrot button to reclaim control!
+                </p>
+              </div>
+
+              {/* Concept Card 3: Real life superpower */}
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-slate-300">
+                <span className="font-cyber font-bold text-emerald-300 text-xs block mb-1">
+                  🌟 Your Real-Life Brain Superpower:
+                </span>
+                <p className="text-xs">
+                  This eye-hand loop is what allows you to catch a baseball, balance on a scooter when you hit a pebble, write with a pencil, or play a musical instrument. Your brain is constantly checking: <em>&quot;Did my hand do what my eyes wanted?&quot;</em> and fixing mistakes in milliseconds!
+                </p>
+              </div>
             </div>
           </div>
 

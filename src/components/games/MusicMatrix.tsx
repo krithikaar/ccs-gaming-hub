@@ -985,20 +985,58 @@ export const MusicMatrix: React.FC<MusicMatrixProps> = ({
           </div>
 
           {/* Brain Power Unlocked Explanation Box */}
-          <div className="p-6 rounded-3xl bg-slate-950/80 border-2 border-cyan-500/40 text-left space-y-3 shadow-xl max-w-lg mx-auto">
-            <div className="flex items-center gap-2">
+          <div className="p-6 rounded-3xl bg-slate-950/90 border-2 border-cyan-500/40 text-left space-y-4 shadow-xl max-w-xl mx-auto">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-cyber">
-                🧠 BRAIN POWER UNLOCKED
+                🧠 BRAIN POWER UNLOCKED: MULTISENSORY TIME PERCEPTION
+              </span>
+              <span className="text-xs font-mono-tag text-amber-300 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Sound + Sight + Touch Sync</span>
               </span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-amber-300 uppercase font-cyber tracking-tight flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
-              <span>Audiovisual Predictive Timing</span>
+
+            <h3 className="text-lg sm:text-xl font-black text-white uppercase font-cyber tracking-tight">
+              Wait... Why Did We Play This? How Does Your Brain Measure Time?
             </h3>
-            <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-slate-200 text-xs sm:text-sm leading-relaxed space-y-2">
-              <p>
-                <strong className="text-cyan-300">What you just did:</strong> Tapping to the beat combined two senses at once: seeing the falling tiles and hearing the rhythm. Your brain acted like a master DJ, fusing sight and sound together to predict the exact moment to tap right on beat.
-              </p>
+
+            <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed font-body">
+              {/* Concept Card 1: The Three Senses Working Together */}
+              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-cyan-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>🎵 + 👁️ + 👆</span>
+                  <span>1. The 3-Way Sensory Symphony:</span>
+                </div>
+                <p>
+                  Your brain doesn&apos;t have a mechanical clock or stopwatch inside your head. Instead, it measures time by <strong className="text-white font-semibold">fusing three different senses at once</strong>:
+                </p>
+                <ul className="list-disc list-inside space-y-1 pl-1 text-slate-300 text-xs">
+                  <li><strong className="text-amber-300 font-semibold">Sound (Ears):</strong> Hearing the beat gives your brain an invisible metronome. Sound travels to your brain faster than sight!</li>
+                  <li><strong className="text-cyan-300 font-semibold">Visual (Eyes):</strong> Watching the neon tile fall tells your eyes the distance and speed.</li>
+                  <li><strong className="text-pink-300 font-semibold">Touch (Fingers):</strong> Tapping the screen or key gives physical feedback at the exact millisecond of impact.</li>
+                </ul>
+              </div>
+
+              {/* Concept Card 2: Guiding Time Perception */}
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-amber-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>⏱️</span>
+                  <span>2. How Sync Guides Your Perception of Time:</span>
+                </div>
+                <p>
+                  When sound, touch, and sight fire together in harmony, your brain can predict the future! You don&apos;t wait until the tile crosses the line to react—your auditory rhythm guides your fingers to strike <strong className="text-white font-semibold">before</strong> it even hits. Sound anchored your sense of time, vision showed the target, and touch locked the groove!
+                </p>
+              </div>
+
+              {/* Concept Card 3: Real world connection */}
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-slate-300">
+                <span className="font-cyber font-bold text-emerald-300 text-xs block mb-1">
+                  🌟 Your Real-Life Brain Superpower:
+                </span>
+                <p className="text-xs">
+                  This 3-way synchronization is what allows drummers, pianists, dancers, and video gamers to enter the &quot;flow state.&quot; When sound, vision, and touch lock into sync, time feels smooth and effortless!
+                </p>
+              </div>
             </div>
           </div>
 

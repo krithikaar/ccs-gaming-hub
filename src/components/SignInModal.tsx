@@ -54,7 +54,6 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       'music-matrix': 0,
       'blasting-balloons': 0,
       'learn-to-breathe': 0,
-      'boba-dino': 0,
     };
 
     const defaultGamesPlayed: Record<GameId, number> = {
@@ -63,7 +62,6 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       'music-matrix': 0,
       'blasting-balloons': 0,
       'learn-to-breathe': 0,
-      'boba-dino': 0,
     };
 
     const newProfile: UserProfile = {

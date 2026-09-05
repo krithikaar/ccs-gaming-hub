@@ -113,7 +113,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
                   : 'bg-white/5 hover:bg-white/10 border-white/10 text-white/60 hover:text-white'
               }`}
             >
-              <span>{game.id === 'spider-rabbit' ? '🐰' : game.id === 'animal-mind-control' ? '🧠' : game.id === 'music-matrix' ? '🎹' : game.id === 'blasting-balloons' ? '🎈' : game.id === 'boba-dino' ? '🦖' : '🐡'}</span>
+              <span>{game.id === 'spider-rabbit' ? '🐰' : game.id === 'animal-mind-control' ? '🧠' : game.id === 'music-matrix' ? '🎹' : game.id === 'blasting-balloons' ? '🎈' : '🐡'}</span>
               <span>{game.title}</span>
             </button>
           );

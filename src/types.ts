@@ -3,8 +3,7 @@ export type GameId =
   | 'spider-rabbit'
   | 'music-matrix'
   | 'blasting-balloons'
-  | 'learn-to-breathe'
-  | 'boba-dino';
+  | 'learn-to-breathe';
 
 export interface UserProfile {
   name: string;

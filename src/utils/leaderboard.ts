@@ -49,15 +49,6 @@ const INITIAL_SEED_DATA: Record<GameId, Omit<LeaderboardEntry, 'id' | 'gameId' |
     { playerName: 'WaveWhisperer', gamerTag: 'Wave_#667', avatar: 'cyber-lion', score: 1950, extraMetric: '2/4 Solved • 80% Ocean Respiration Sync', date: '3 days ago' },
     { playerName: 'ReefExplorer', gamerTag: 'Reef_#119', avatar: 'robot-spark', score: 1520, extraMetric: '2/4 Solved • 75% Ocean Respiration Sync', date: '4 days ago' },
   ],
-  'boba-dino': [
-    { playerName: 'ChronoDino', gamerTag: 'Chrono_#999', avatar: 'neon-dragon', score: 4950, extraMetric: '98% Time Warp Binding • 6/6 Fed', date: '30 mins ago' },
-    { playerName: 'MatchaRex', gamerTag: 'Matcha_#512', avatar: 'cyber-fox', score: 4420, extraMetric: '94% Time Warp Binding • 6/6 Fed', date: '2 hours ago' },
-    { playerName: 'BobaBaron', gamerTag: 'Baron_#331', avatar: 'astro-bunny', score: 3980, extraMetric: '91% Time Warp Binding • 6/6 Fed', date: '5 hours ago' },
-    { playerName: 'SugarRush', gamerTag: 'Rush_#808', avatar: 'pixel-tiger', score: 3510, extraMetric: '88% Time Warp Binding • 6/6 Fed', date: '1 day ago' },
-    { playerName: 'TapiocaKid', gamerTag: 'Tapioca_#104', avatar: 'ninja-panda', score: 2940, extraMetric: '84% Time Warp Binding • 6/6 Fed', date: '2 days ago' },
-    { playerName: 'SweetTooth', gamerTag: 'Sweet_#772', avatar: 'cosmic-bear', score: 2420, extraMetric: '79% Time Warp Binding • 6/6 Fed', date: '3 days ago' },
-    { playerName: 'MarshmallowX', gamerTag: 'Mallow_#618', avatar: 'robot-spark', score: 1880, extraMetric: '73% Time Warp Binding • 6/6 Fed', date: '4 days ago' },
-  ],
 };
 
 function loadStoredLeaderboards(): Record<GameId, LeaderboardEntry[]> {
@@ -78,7 +69,6 @@ function initializeSeedData(): Record<GameId, LeaderboardEntry[]> {
     'music-matrix': [],
     'blasting-balloons': [],
     'learn-to-breathe': [],
-    'boba-dino': [],
   };
 
   (Object.keys(INITIAL_SEED_DATA) as GameId[]).forEach((gameId) => {

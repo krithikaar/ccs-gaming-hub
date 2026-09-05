@@ -1451,20 +1451,53 @@ export const BlastingBalloons: React.FC<BlastingBalloonsProps> = ({
           </div>
 
           {/* Brain Power Unlocked Explanation Box */}
-          <div className="p-6 rounded-3xl bg-slate-950/80 border-2 border-cyan-500/40 text-left space-y-3 shadow-xl max-w-xl mx-auto">
-            <div className="flex items-center gap-2">
+          <div className="p-6 rounded-3xl bg-slate-950/90 border-2 border-cyan-500/40 text-left space-y-4 shadow-xl max-w-xl mx-auto">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-cyber">
-                🧠 BRAIN POWER UNLOCKED
+                🧠 BRAIN POWER UNLOCKED: PURE VISUAL TIMING
+              </span>
+              <span className="text-xs font-mono-tag text-amber-300 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Eyes Only, No Sound Cues!</span>
               </span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-amber-300 uppercase font-cyber tracking-tight flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
-              <span>Predictive Visual Timing</span>
+
+            <h3 className="text-lg sm:text-xl font-black text-white uppercase font-cyber tracking-tight">
+              Wait... Why Did We Blast Balloons? How Did Your Eyes Judge Time?
             </h3>
-            <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-slate-200 text-xs sm:text-sm leading-relaxed space-y-2">
-              <p>
-                <strong className="text-cyan-300">What you just did:</strong> Pop! Because visual signals take a split second to reach your brain, you couldn&apos;t just react—you had to look into the near future. Your brain calculated the balloon&apos;s speed and predicted the exact millisecond to fire, showing off your predictive visual timing.
-              </p>
+
+            <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed font-body">
+              {/* Concept Card 1: Pure Visual Timing */}
+              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-cyan-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>👁️</span>
+                  <span>1. Flying Blind Without Sound Cues:</span>
+                </div>
+                <p>
+                  In music rhythm games, your ears give you a musical beat to count down the seconds. But here, there was <strong className="text-white font-semibold">no beat, no ticking clock, and no audio warning</strong>. Your brain had to rely on <strong className="text-amber-300 font-semibold">ONLY YOUR EYES (Pure Visual Perception)</strong> to judge the exact millisecond of arrival!
+                </p>
+              </div>
+
+              {/* Concept Card 2: Visual Delay & Future Prediction */}
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1.5">
+                <div className="font-cyber font-bold text-amber-300 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span>⚡</span>
+                  <span>2. Why Your Brain Had to &quot;Predict the Future&quot;:</span>
+                </div>
+                <p>
+                  Did you know it takes about <strong className="text-white font-semibold">50 to 80 milliseconds</strong> for light hitting your eyes to be processed by your brain? If you waited until you saw the balloon touching the line, it was already too late! To hit the <strong className="text-cyan-300 font-semibold">&lt;30ms and &lt;100ms windows</strong>, your visual cortex calculated the rising speed and triggered your finger to blast <strong className="text-white font-semibold">before</strong> the balloon actually arrived. You were predicting the future!
+                </p>
+              </div>
+
+              {/* Concept Card 3: Real world connection */}
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-slate-300">
+                <span className="font-cyber font-bold text-emerald-300 text-xs block mb-1">
+                  🌟 Your Real-Life Brain Superpower:
+                </span>
+                <p className="text-xs">
+                  This pure visual anticipation is what baseball batters use to crush a 90 mph fastball, tennis players use to return a lightning serve, and goalkeepers use to dive for a penalty shot. No sound can help you in time—your visual brain does the physics math entirely on its own!
+                </p>
+              </div>
             </div>
           </div>
 

@@ -141,35 +141,6 @@ export const GAMES_DATA: GameDefinition[] = [
       { id: 'lb_2', title: 'Ocean Empath', desc: 'Decode 3 or more emotions accurately', icon: '🪼', xp: 250 },
       { id: 'lb_3', title: 'Master Deep-Sea Empath', desc: 'Achieve a perfect 4/4 mystery score', icon: '👑', xp: 500 }
     ]
-  },
-  {
-    id: 'boba-dino',
-    title: 'BobaDino: Time Warp Candy Shop',
-    tagline: 'Feed the cute Green T-Rex boba tea & explore the brain’s Intentional Binding Time Warp!',
-    shortDesc: 'A cute T-Rex Dino is sipping boba in a vibrant candy shop! In active trials, tap to feed Dino; in passive trials, watch Dino sip on his own. Estimate the time delay between the Sparkle DING and the Boba POP to discover how your brain compresses time when you take action!',
-    genre: 'Mind & Puzzle',
-    difficulty: 'Dynamic',
-    colorScheme: {
-      primary: 'from-emerald-500 via-lime-500 to-pink-500',
-      secondary: 'bg-emerald-950/80',
-      gradient: 'linear-gradient(135deg, #10b981 0%, #84cc16 50%, #ec4899 100%)',
-      glow: 'shadow-emerald-500/40',
-      badgeBg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-      textAccent: 'text-emerald-400',
-    },
-    iconName: 'Sparkles',
-    features: [
-      '🦖 Adorable Green T-Rex with Animated Boba Straw & Cup',
-      '🍬 Sweet Pastel Candy Shop Backdrop with Candies & Marshmallows',
-      '⚡ 6-Trial Intentional Binding Experiment (Active vs. Passive)',
-      '🍭 Candy Cane Time Estimation Slider (0–1000ms with 100ms Ticks)',
-      '🧠 Scientific Time-Warp Debrief & Bar Chart Comparison'
-    ],
-    achievements: [
-      { id: 'bd_1', title: 'Boba Feeder', desc: 'Feed BobaDino and complete your first estimation trial', icon: '🧋', xp: 100 },
-      { id: 'bd_2', title: 'Time Warp Explorer', desc: 'Discover intentional binding across all 6 trials', icon: '⏳', xp: 250 },
-      { id: 'bd_3', title: 'Master Chrono-Dino', desc: 'Score over 3,500 points in the Candy Shop Experiment', icon: '👑', xp: 500 }
-    ]
   }
 ];
 
