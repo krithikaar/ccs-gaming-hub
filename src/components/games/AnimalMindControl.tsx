@@ -27,6 +27,7 @@ import {
   ChibiAvatar,
 } from './ChibiAnimals';
 import { MangaForestBackground } from './MangaForestBackground';
+import { AgencyBrainMap } from './AgencyBrainMap';
 
 interface AnimalMindControlProps {
   profile: UserProfile;
@@ -946,6 +947,11 @@ export const AnimalMindControl: React.FC<AnimalMindControlProps> = ({
                 <p>
                   In this game, four cute animals were hopping all over the screen. Three were decoys doing their own thing, but <strong className="text-white font-semibold">one secret animal was wired to your fingertips</strong>. Every time you pressed an arrow, your brain predicted: <em>&quot;If I press LEFT, my animal should dart LEFT right now.&quot;</em> When you saw that exact match in timing and direction, your brain shouted: <strong className="text-cyan-300 font-semibold">&quot;Aha! That one is under my control!&quot;</strong>
                 </p>
+              </div>
+
+              {/* Scientifically Accurate Interactive Brain Network Map */}
+              <div className="pt-2">
+                <AgencyBrainMap game="animal-mind-control" />
               </div>
 
               {/* Concept Card 3: Real world connection */}

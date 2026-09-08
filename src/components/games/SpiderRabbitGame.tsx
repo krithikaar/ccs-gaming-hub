@@ -4,6 +4,7 @@ import { sounds } from '../../utils/audio';
 import { recordGameScore } from '../../utils/leaderboard';
 import { LeaderboardView } from '../LeaderboardView';
 import { SpiderRabbitAvatar } from '../SpiderRabbitAvatar';
+import { AgencyBrainMap } from './AgencyBrainMap';
 import {
   ArrowLeft,
   RotateCcw,
@@ -2013,6 +2014,11 @@ export const SpiderRabbitGame: React.FC<SpiderRabbitGameProps> = ({
                 <p>
                   As long as Spider-Rabbit followed your hand, you felt in total command—that&apos;s your <strong className="text-white font-semibold">Sense of Agency</strong> (&quot;I am in control!&quot;). But every so often, a sneaky wind or distraction knocked Spider-Rabbit off track. Your eyes saw Spider-Rabbit slide sideways, but your hand knew <em>you didn&apos;t do that!</em> Your brain instantly caught the mismatch between sight and touch: <strong className="text-yellow-300 font-semibold">&quot;Hey, that wasn&apos;t me!&quot;</strong>—and you slammed the Carrot button to reclaim control!
                 </p>
+              </div>
+
+              {/* Scientifically Accurate Interactive Brain Network Map */}
+              <div className="pt-2">
+                <AgencyBrainMap game="spider-rabbit" />
               </div>
 
               {/* Concept Card 3: Real life superpower */}
